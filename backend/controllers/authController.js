@@ -1,8 +1,19 @@
-// controllers/authController.js
+/**
+ * @fileoverview Authentication controller handling user registration, login, and password updates
+ * @module controllers/authController
+ */
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User, Store } = require('../models');
 
+/**
+ * Generates a JWT token for user authentication
+ * @param {Object} user - User object containing id and role
+ * @param {number} user.id - User ID
+ * @param {string} user.role - User role (ADMIN, USER, STORE_OWNER)
+ * @returns {string} JWT token
+ */
 const generateToken = (user) => {
   return jwt.sign(
     { id: user.id, role: user.role },
@@ -11,6 +22,19 @@ const generateToken = (user) => {
   );
 };
 
+/**
+ * Handles user registration
+ * @async
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - Request body containing user details
+ * @param {string} req.body.name - User's name (20-60 characters)
+ * @param {string} req.body.email - User's email
+ * @param {string} req.body.password - User's password (8-16 chars, uppercase, special char)
+ * @param {string} req.body.address - User's address (max 400 chars)
+ * @param {string} req.body.role - User's role
+ * @param {Object} res - Express response object
+ * @returns {Object} Response with token or error message
+ */
 const register = async (req, res) => {
   try {
     const { name, email, password, address, role } = req.body;

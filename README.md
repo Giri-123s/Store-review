@@ -2,12 +2,205 @@
 
 A comprehensive web application that allows users to submit ratings for stores registered on the platform. Built with React.js frontend and Express.js backend with PostgreSQL database.
 
-## 🚀 Features
+## 🚀 Tech Stack
+
+### Backend
+- Express.js (Node.js framework)
+- PostgreSQL (Database)
+- JSON Web Tokens (Authentication)
+- Express Validator (Input Validation)
+
+### Frontend
+- React.js with Context API
+- Material-UI (UI Components)
+- Axios (HTTP Client)
+
+## ✨ Features
 
 ### System Administrator
-- ✅ **Dashboard** with statistics (Total users, stores, ratings)
-- ✅ **Add new stores** with owner accounts
-- ✅ **Add new users** (normal users and admin users)
+- 📊 **Dashboard Analytics**
+  - Total number of users
+  - Total number of stores
+  - Total number of ratings
+- 👥 **User Management**
+  - Add new users (normal/admin)
+  - View user listings with filters
+  - User details: Name, Email, Address, Role
+- 🏪 **Store Management**
+  - Add new stores
+  - View store listings with filters
+  - Store details: Name, Email, Address, Rating
+
+### Normal User
+- 🔐 **Authentication**
+  - Sign up with validation
+  - Secure login
+  - Password updates
+- 📝 **Store Interaction**
+  - View all stores
+  - Search by name/address
+  - Submit/modify ratings (1-5)
+
+### Store Owner
+- 📈 **Dashboard**
+  - View user ratings
+  - Track average rating
+- 🔒 **Account Management**
+  - Secure login
+  - Password updates
+
+## 🛠️ Installation
+
+### Prerequisites
+- Node.js (v14+)
+- PostgreSQL
+- npm/yarn
+
+### Setup Steps
+
+1. **Clone & Install Dependencies**
+```bash
+# Clone repository
+git clone <repo-url>
+
+# Backend setup
+cd backend
+npm install
+
+# Frontend setup
+cd ../frontend
+npm install
+```
+
+2. **Environment Configuration**
+
+Backend (.env):
+```env
+DB_HOST=localhost
+DB_USER=your_username
+DB_PASS=your_password
+DB_NAME=your_database
+JWT_SECRET=your_jwt_secret
+```
+
+Frontend (.env):
+```env
+REACT_APP_API_URL=http://localhost:5000
+```
+
+3. **Initialize Database**
+```bash
+# Create admin user
+cd backend
+node createAdmin.js
+```
+
+4. **Start Application**
+```bash
+# Start backend
+cd backend
+npm start
+
+# Start frontend (new terminal)
+cd frontend
+npm start
+```
+
+## 🔍 Validation Rules
+
+### User Input
+1. **Name**
+   - Min: 20 characters
+   - Max: 60 characters
+
+2. **Address**
+   - Max: 400 characters
+
+3. **Password**
+   - Length: 8-16 characters
+   - Requirements:
+     - One uppercase letter
+     - One special character
+
+4. **Email**
+   - Standard email format
+   - Unique in system
+
+5. **Rating**
+   - Range: 1 to 5
+   - Integer values only
+
+## 📝 API Documentation
+
+### Authentication
+- POST `/api/auth/register` - User registration
+- POST `/api/auth/login` - User login
+- PUT `/api/auth/password` - Update password
+
+### Admin Routes
+- GET `/api/admin/stats` - Dashboard statistics
+- GET `/api/admin/users` - List users
+- POST `/api/admin/users` - Create user
+- GET `/api/admin/stores` - List stores
+- POST `/api/admin/stores` - Create store
+
+### User Routes
+- GET `/api/stores` - List stores
+- POST `/api/stores/:id/rate` - Submit rating
+- PUT `/api/stores/:id/rate` - Update rating
+
+### Store Owner Routes
+- GET `/api/store/ratings` - View ratings
+- GET `/api/store/stats` - Store statistics
+
+## 💾 Database Schema
+
+### Users
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(60) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  address TEXT NOT NULL,
+  role VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Stores
+```sql
+CREATE TABLE stores (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(60) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  address TEXT NOT NULL,
+  owner_id INTEGER REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Ratings
+```sql
+CREATE TABLE ratings (
+  id SERIAL PRIMARY KEY,
+  store_id INTEGER REFERENCES stores(id),
+  user_id INTEGER REFERENCES users(id),
+  rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(store_id, user_id)
+);
+```
+
+## 🔒 Security Features
+- Password hashing
+- JWT authentication
+- Input validation
+- SQL injection protection
+- Role-based access control
 - ✅ **View and manage** all users and stores
 - ✅ **Search and filter** functionality on all listings
 - ✅ **Sorting** capabilities for all data tables

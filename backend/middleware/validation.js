@@ -1,6 +1,17 @@
-// middleware/validation.js
+/**
+ * @fileoverview Input validation middleware using express-validator
+ * @module middleware/validation
+ */
+
 const { body, validationResult } = require('express-validator');
 
+/**
+ * Middleware to handle validation errors
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @returns {Object|void} Error response or continues to next middleware
+ */
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -12,6 +23,15 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
+/**
+ * Validation rules for user input
+ * @constant {Array<Function>}
+ * @description Validates:
+ * - name: 20-60 characters
+ * - email: valid email format
+ * - password: 8-16 chars, uppercase, special char
+ * - address: max 400 chars
+ */
 const validateUser = [
   body('name')
     .isLength({ min: 20, max: 60 })

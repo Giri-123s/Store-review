@@ -1,7 +1,24 @@
-// controllers/storeController.js
+/**
+ * @fileoverview Store controller handling store-related operations and ratings
+ * @module controllers/storeController
+ */
+
 const { Store, Rating, User } = require('../models');
 const { Op } = require('sequelize');
 
+/**
+ * Retrieves all stores with optional filtering and sorting
+ * @async
+ * @param {Object} req - Express request object
+ * @param {Object} req.query - Query parameters
+ * @param {string} [req.query.search] - Search term for store name or address
+ * @param {string} [req.query.sortBy='name'] - Field to sort by
+ * @param {string} [req.query.sortOrder='ASC'] - Sort order (ASC/DESC)
+ * @param {Object} req.user - Authenticated user object
+ * @param {number} req.user.id - User ID for getting user's ratings
+ * @param {Object} res - Express response object
+ * @returns {Object} Response with stores data
+ */
 const getAllStores = async (req, res) => {
   try {
     const { search, sortBy = 'name', sortOrder = 'ASC' } = req.query;
